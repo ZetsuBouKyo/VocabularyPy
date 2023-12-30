@@ -1,0 +1,16 @@
+__pycache__
+.coverage
+.env
+.git
+.pytest_cache
+.python-version
+.venv
+*.code-workspace
+*.db
+*.json
+/dev
+/etc
+/logs
+/node_modules
+package-lock.json
+poetry.lock*

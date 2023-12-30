@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "vocabularypy"
+version = "0.1.0"
+description = ""
+authors = ["ZetsuBouKyo <116266262+ZetsuBouKyo@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiosqlite = "^0.19.0"
+pydantic = "^2.5.3"
+sqlalchemy = "^2.0.24"
+typer = "^0.9.0"
+rich = "^13.7.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
