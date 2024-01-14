@@ -124,6 +124,11 @@ class VocabularyData:
         else:
             self.data[vocabulary].append(row)
 
+    def status(self):
+        total = len(self.last_viewed)
+        console = Console()
+        console.print(f"total: {total}")
+
     def delete(self, vocabulary: str):
         self.data.pop(vocabulary)
         self.data.pop(vocabulary)

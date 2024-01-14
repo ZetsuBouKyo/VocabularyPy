@@ -35,6 +35,12 @@ def random(number: int = Option(10, "-n/"), forgot: bool = Option(False, "-f/"))
 
 
 @app.command()
+def status():
+    with VocabularyData() as data:
+        data.status()
+
+
+@app.command()
 def delete(vocabulary: List[str] = Option([], "-v/")):
     with VocabularyData() as data:
         for v in vocabulary:
