@@ -108,7 +108,7 @@ class VocabularyData:
         print_rows(rows)
 
     def new(self, num: int = 10):
-        rows = self.last_viewed[-1 - num : -1]
+        rows = self.last_viewed[-1 - num :]
         print_rows(rows)
 
     def random(self, num: int = 10, forgot: bool = False):
