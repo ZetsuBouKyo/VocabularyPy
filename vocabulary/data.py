@@ -3,9 +3,16 @@ import random
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+from typing import List, Tuple
 
 from rich.console import Console
 from rich.table import Table
+
+VocabularyStr = str
+DatetimeStr = str
+VocabularyStateInt = int
+VocabularyTuple = Tuple[VocabularyStr, DatetimeStr, VocabularyStateInt]
+VocabularyTupleList = List[VocabularyTuple]
 
 
 class VocabularyState(int, Enum):
@@ -13,12 +20,12 @@ class VocabularyState(int, Enum):
     READ: int = 2
 
 
-def sort_by_date(row):
+def sort_by_date(row: VocabularyTuple):
     date = row[1]
     return datetime.strptime(date, r"%Y-%m-%dT%H:%M:%S.%f")
 
 
-def get_rows(rows, num: int = 10, forgot: bool = False):
+def get_rows(rows: VocabularyTupleList, num: int = 10, forgot: bool = False):
     if forgot:
         i = j = 0
         new_rows = []
@@ -34,6 +41,26 @@ def get_rows(rows, num: int = 10, forgot: bool = False):
     return new_rows
 
 
+def print_rows(rows: VocabularyTupleList):
+    table = Table()
+    table.add_column("vocabulary")
+    table.add_column("date")
+    table.add_column("state")
+
+    for row in rows:
+        vocabulary = row[0]
+        date = row[1]
+        state_code = row[2]
+        if state_code == VocabularyState.FORGOT.value:
+            state = "forgot"
+        else:
+            state = "read"
+        table.add_row(vocabulary, date, state)
+
+    console = Console()
+    console.print(table)
+
+
 class VocabularyData:
     def __init__(self, fpath: str = "./vocabulary.json"):
         self._fpath = Path(fpath)
@@ -43,7 +70,7 @@ class VocabularyData:
         else:
             self.data = {}
 
-        self.last_viewed = []
+        self.last_viewed: VocabularyTupleList = []
         for v, rows in self.data.items():
             self.last_viewed.append((v, rows[-1][0], rows[-1][1]))
         self.last_viewed.sort(key=sort_by_date)
@@ -78,24 +105,11 @@ class VocabularyData:
 
     def list(self, num: int = 10, forgot: bool = False):
         rows = get_rows(self.last_viewed, num=num, forgot=forgot)
+        print_rows(rows)
 
-        table = Table()
-        table.add_column("vocabulary")
-        table.add_column("date")
-        table.add_column("state")
-
-        for row in rows:
-            vocabulary = row[0]
-            date = row[1]
-            state_code = row[2]
-            if state_code == VocabularyState.FORGOT.value:
-                state = "forgot"
-            else:
-                state = "read"
-            table.add_row(vocabulary, date, state)
-
-        console = Console()
-        console.print(table)
+    def new(self, num: int = 10):
+        rows = self.last_viewed[-1 - num : -1]
+        print_rows(rows)
 
     def random(self, num: int = 10, forgot: bool = False):
         random.shuffle(self.last_viewed)

@@ -23,6 +23,12 @@ def forgot(vocabulary: str = Argument(...)):
 
 
 @app.command()
+def new(number: int = Option(10, "-n/")):
+    with VocabularyData() as data:
+        data.new(num=number)
+
+
+@app.command()
 def random(number: int = Option(10, "-n/"), forgot: bool = Option(False, "-f/")):
     with VocabularyData() as data:
         data.random(num=number, forgot=forgot)
@@ -33,6 +39,20 @@ def delete(vocabulary: List[str] = Option([], "-v/")):
     with VocabularyData() as data:
         for v in vocabulary:
             data.delete(v)
+
+
+@app.command()
+def list(
+    vocabulary: str = Option(None, "-v/"),
+    number: int = Option(10, "-n/"),
+    forgot: bool = Option(False, "-f/"),
+):
+    if vocabulary is not None:
+        with VocabularyData() as data:
+            data.info(vocabulary)
+    else:
+        with VocabularyData() as data:
+            data.list(num=number, forgot=forgot)
 
 
 @app.command()
