@@ -43,11 +43,12 @@ def get_rows(rows: VocabularyTupleList, num: int = 10, forgot: bool = False):
 
 def print_rows(rows: VocabularyTupleList):
     table = Table()
-    table.add_column("vocabulary")
-    table.add_column("date")
-    table.add_column("state")
+    table.add_column("No.")
+    table.add_column("Vocabulary")
+    table.add_column("Date")
+    table.add_column("State")
 
-    for row in rows:
+    for i, row in enumerate(rows):
         vocabulary = row[0]
         date = row[1]
         state_code = row[2]
@@ -55,7 +56,8 @@ def print_rows(rows: VocabularyTupleList):
             state = "forgot"
         else:
             state = "read"
-        table.add_row(vocabulary, date, state)
+        no = str(i + 1)
+        table.add_row(no, vocabulary, date, state)
 
     console = Console()
     console.print(table)
@@ -108,7 +110,7 @@ class VocabularyData:
         print_rows(rows)
 
     def new(self, num: int = 10):
-        rows = self.last_viewed[-1 - num :]
+        rows = self.last_viewed[-num:]
         print_rows(rows)
 
     def random(self, num: int = 10, forgot: bool = False):
