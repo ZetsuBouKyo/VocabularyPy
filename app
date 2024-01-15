@@ -41,6 +41,12 @@ def status():
 
 
 @app.command()
+def today():
+    with VocabularyData() as data:
+        data.today()
+
+
+@app.command()
 def delete(vocabulary: List[str] = Option([], "-v/")):
     with VocabularyData() as data:
         for v in vocabulary:
@@ -49,30 +55,17 @@ def delete(vocabulary: List[str] = Option([], "-v/")):
 
 @app.command()
 def list(
-    vocabulary: str = Option(None, "-v/"),
-    number: int = Option(10, "-n/"),
     forgot: bool = Option(False, "-f/"),
+    number: int = Option(10, "-n/"),
+    le: int = Option(None, "-le/"),
+    vocabulary: str = Option(None, "-v/"),
 ):
     if vocabulary is not None:
         with VocabularyData() as data:
             data.info(vocabulary)
     else:
         with VocabularyData() as data:
-            data.list(num=number, forgot=forgot)
-
-
-@app.command()
-def list(
-    vocabulary: str = Option(None, "-v/"),
-    number: int = Option(10, "-n/"),
-    forgot: bool = Option(False, "-f/"),
-):
-    if vocabulary is not None:
-        with VocabularyData() as data:
-            data.info(vocabulary)
-    else:
-        with VocabularyData() as data:
-            data.list(num=number, forgot=forgot)
+            data.list(num=number, forgot=forgot, le=le)
 
 
 if __name__ == "__main__":
