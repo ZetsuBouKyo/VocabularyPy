@@ -2,6 +2,7 @@ import json
 import random
 from datetime import datetime
 from enum import Enum
+from functools import wraps
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -82,6 +83,15 @@ def print_rows(rows: VocabularyTupleList):
     console.print(table)
 
 
+def saved(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        args[0]._save = True
+        return f(*args, **kwargs)
+
+    return wrap
+
+
 class VocabularyData:
     def __init__(self, fpath: str = "./vocabulary.json"):
         self._fpath = Path(fpath)
@@ -101,10 +111,14 @@ class VocabularyData:
             self.first_viewed.append((v, rows[0][0], rows[0][1], len(rows)))
         self.first_viewed.sort(key=sort_by_date)
 
+        self._save = False
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        if not self._save:
+            return
         with self._fpath.open(mode="w") as f:
             json.dump(self.data, f, indent=4)
 
@@ -141,6 +155,7 @@ class VocabularyData:
         random.shuffle(self.last_viewed)
         return self.list(num=num, forgot=forgot)
 
+    @saved
     def read(self, vocabulary: str, state: VocabularyState):
         if type(state) is VocabularyState:
             state = state.value
@@ -165,6 +180,7 @@ class VocabularyData:
                 rows.append(row)
         print_rows(rows)
 
+    @saved
     def delete(self, vocabulary: str):
         self.data.pop(vocabulary)
         self.data.pop(vocabulary)
