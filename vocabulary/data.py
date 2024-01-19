@@ -147,16 +147,8 @@ class VocabularyData:
         rows = get_rows(self.last_viewed, num=num, forgot=forgot, le=le)
         print_rows(rows)
 
-    def new(self, num: int = 10):
-        rows = self.first_viewed[-num:]
-        print_rows(rows)
-
-    def random(self, num: int = 10, forgot: bool = False):
-        random.shuffle(self.last_viewed)
-        return self.list(num=num, forgot=forgot)
-
     @saved
-    def read(self, vocabulary: str, state: VocabularyState):
+    def new(self, vocabulary: str, state: VocabularyState):
         if type(state) is VocabularyState:
             state = state.value
         row = (datetime.now().isoformat(), state)
@@ -164,6 +156,18 @@ class VocabularyData:
             self.data[vocabulary] = [row]
         else:
             self.data[vocabulary].append(row)
+
+    def random(self, num: int = 10, forgot: bool = False):
+        random.shuffle(self.last_viewed)
+        return self.list(num=num, forgot=forgot)
+
+    @saved
+    def read(self, vocabulary: str, state: VocabularyState):
+        if self.data.get(vocabulary, None) is None:
+            console = Console()
+            console.print(f"{vocabulary} does not exist.")
+            return
+        self.new(vocabulary, state)
 
     def status(self):
         total = len(self.last_viewed)

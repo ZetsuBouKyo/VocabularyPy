@@ -23,9 +23,9 @@ def forgot(vocabulary: str = Argument(...)):
 
 
 @app.command()
-def new(number: int = Option(10, "-n/")):
+def new(vocabulary: str = Argument(...)):
     with VocabularyData() as data:
-        data.new(num=number)
+        data.new(vocabulary, state=VocabularyState.READ.value)
 
 
 @app.command()
